@@ -249,15 +249,9 @@ client.on('guildMemberAdd', async (member) => {
     
     // Create a welcome embed message with predefined content
     const welcomeEmbed = new EmbedBuilder()
-        .setColor('#00ff00') // Green color
+        .setColor('#14b8a6') // Clearo Teal color
         .setTitle('🎉 Welcome to Clearo!')
         .setDescription(welcomeText)
-        .addFields(
-            { name: '👋 Getting Started', value: 'Take a look around and get familiar with our channels!' },
-            { name: '📋 Rules', value: 'Make sure to read our server rules to keep things fun for everyone!' },
-            { name: '💬 Chat', value: 'Feel free to introduce yourself and start chatting!' },
-            { name: '🚀 About Clearo', value: 'Discover the AI-powered second brain that organizes your thoughts effortlessly!' }
-        )
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
         .setTimestamp()
         .setFooter({ text: 'Clearo Bot', iconURL: client.user.displayAvatarURL() });
@@ -466,7 +460,7 @@ async function assignUserRoles(member, subscriptionData) {
                 console.log(`✅ Assigned Premium role to ${member.user.tag}`);
                 
                 // Send congratulations message
-                const channel = guild.channels.cache.get('1381242780239794300'); // Welcome channel
+                const channel = guild.channels.cache.get('1389211854844461066'); // bot-commands channel
                 if (channel) {
                     await channel.send(`🎉 Congratulations ${member.user}! You've been verified as a **Clearo Premium** subscriber! Enjoy your exclusive perks! ✨`);
                 }
