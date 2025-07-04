@@ -190,18 +190,6 @@ client.once('ready', async () => {
                     required: true
                 }
             ]
-        },
-        {
-            name: 'check-subscription',
-            description: 'Check and update user subscription status (Admin only)',
-            options: [
-                {
-                    name: 'user',
-                    description: 'User to check',
-                    type: 6, // USER type
-                    required: true
-                }
-            ]
         }
     ];
     
@@ -510,7 +498,7 @@ client.on('interactionCreate', async (interaction) => {
                 ? '✅ Account linked successfully! Premium role assigned! 🎉'
                 : '✅ Account linked successfully! Verified role assigned!';
             
-            await interaction.editReply({
+                        await interaction.editReply({
                 content: statusMessage
             });
             
@@ -524,54 +512,8 @@ client.on('interactionCreate', async (interaction) => {
                 console.error('Failed to edit reply:', editError);
             }
         }
-    } else if (interaction.commandName === 'check-subscription') {
-        // Admin command to manually check someone's subscription
-        if (!interaction.member.permissions.has('ADMINISTRATOR')) {
-            await interaction.reply({
-                content: '❌ You need administrator permissions to use this command.',
-                flags: 64 // Ephemeral flag
-            });
-            return;
-        }
-        
-        // Defer reply for admin command too
-        await interaction.deferReply({ flags: 64 });
-        
-        const targetUser = interaction.options.getUser('user');
-        const member = interaction.guild.members.cache.get(targetUser.id);
-        
-        try {
-            // Get linked email for this Discord user
-            const { data: linkData, error: linkError } = await supabase
-                .from('discord_links')
-                .select('email')
-                .eq('discord_id', targetUser.id)
-                .single();
-            
-            if (linkError || !linkData) {
-                await interaction.editReply({
-                    content: `❌ No linked Clearo account found for ${targetUser.tag}`
-                });
-                return;
-            }
-            
-            const subscriptionData = await checkUserSubscription(linkData.email);
-            await assignUserRoles(member, subscriptionData);
-            
-            const status = subscriptionData && subscriptionData.tier === 'premium' ? 'Premium' : 'Free';
-            await interaction.editReply({
-                content: `✅ ${targetUser.tag} subscription status: **${status}** - Roles updated!`
-            });
-            
-        } catch (error) {
-            console.error('Error checking subscription:', error);
-            await interaction.editReply({
-                content: '❌ Error checking subscription status.'
-            });
-        }
     }
 });
-
 // Login to Discord with your app's token
 client.login(process.env.DISCORD_BOT_TOKEN);
 
